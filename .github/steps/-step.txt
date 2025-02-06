@@ -1,1 +1,3 @@
-4
+git clone https://github.com/GabrielGonzalezParra/gabriel_gonzalez-s_portfolio.git
+cd gabriel_gonzalez-s_portfolio
+git checkout my-pages
