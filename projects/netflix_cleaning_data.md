@@ -1,6 +1,12 @@
 # Netflix data cleaning project
 
-This personal project aims to clean a dataset of Netflix titles by handling nulls and duplicates, removing unnecessary columns, and splitting columns to increase their utility. We use both Python and SQL to perform the data cleaning.
+This personal project aims to clean a dataset of Netflix titles by: 
+
+* handling nulls and duplicates 
+* removing unnecessary column
+* splitting columns to increase their utility
+
+We use both Python and SQL to perform the data cleaning.
 
 ## Importing libraries and dataset
 
