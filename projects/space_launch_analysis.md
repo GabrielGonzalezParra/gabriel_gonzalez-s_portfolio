@@ -122,21 +122,29 @@ Analyze and visualize the price of space missions over time.
 
 ```python
 q = """
-SELECT Year, Price
-FROM df
-WHERE Price > 0
-ORDER BY Year ASC
+WITH Avg_Price_Per_Year AS (
+    SELECT Year, ROUND(AVG(Price), 2) as Average_Price
+    FROM df
+    WHERE Price > 0
+    GROUP BY Year
+    ORDER BY Average_Price ASC
+)
+SELECT *
+FROM Avg_Price_Per_Year
 """
-Price_evolution = pysqldf(q)
+Avg_Price_Per_Year = pysqldf(q)
+Avg_Price_Per_Year
+"""
+plt.figure(figsize=(16, 8))
 
-plt.figure(figsize=(14, 10))
-plt.bar(Price_evolution['Year'], Price_evolution['Price'])
+plt.bar(Avg_Price_Per_Year['Year'], Avg_Price_Per_Year['Average_Price'])
 plt.title('Price evolution over the years')
 plt.xlabel('Year')
 plt.ylabel('Price')
 plt.show()
 ```
-![prices](https://github.com/user-attachments/assets/8da001d7-e276-4f45-81a5-bd25cb2e1c96)
+![pricesavg](https://github.com/user-attachments/assets/6949cfd4-fecd-4853-99f0-8c6754da5494)
+
 
 ### 8. Launches by Month
 
