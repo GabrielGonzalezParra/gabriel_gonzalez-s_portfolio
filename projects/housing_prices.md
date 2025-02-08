@@ -1,15 +1,24 @@
-# Exploratory Data Analysis (EDA) Report
+# Exploratory data analysis (EDA)
 
-## 1. Initial Data Exploration
+## 1. Initial data exploration
 
-### Task 1.1: Load the Datasets
+### 1.1: Load the datasets
 The first step involves loading the datasets into the analysis environment. This includes the following datasets:
-- House Price Index by Autonomous Community (2007-2023)
-- Consumer Price Index by Autonomous Community (2007-2023)
-- Average Salaries by Autonomous Community (2007-2023)
-- Number of House Sales by Autonomous Community (2007-2023)
+- House price index by region (2007-2023)
+- Consumer price index by region (2007-2023)
+- Average salaries by region (2007-2023)
+- Number of house sales by region (2007-2023)
 
-### Task 1.2: Inspect the First Few Rows of Each Dataset
+```python
+import pandas as pd
+
+house_prices = pd.read_csv('housing_price_index.csv', delimiter=';')
+prices = pd.read_csv('prices_index.csv', delimiter=';')
+salaries = pd.read_csv('salaries_avg.csv', delimiter=';')
+sales = pd.read_csv('houses_sales.csv', delimiter=';')
+```
+
+### 1.2: Inspect the first few rows of each dataset
 After loading the datasets, we inspect the first few rows using the `.head()` method. This gives us a preliminary look at the structure of the data, including the column names, data types, and a few initial values.
 
 ### Task 1.3: Obtain a Statistical Summary of the Data
