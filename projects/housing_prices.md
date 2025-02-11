@@ -1,8 +1,8 @@
 # Exploratory data analysis (EDA)
 
-## 1. Initial data exploration
+## Initial data exploration
 
-### 1.1: Load the datasets
+### Load the datasets
 The first step involves loading the datasets into the analysis environment. This includes the following datasets:
 - House price index by region (2007-2023)
 - Consumer price index by region (2007-2023)
@@ -18,28 +18,123 @@ salaries = pd.read_csv('salaries_avg.csv', delimiter=';')
 sales = pd.read_csv('houses_sales.csv', delimiter=';')
 ```
 
-### 1.2: Inspect the first few rows of each dataset
+### Inspect the first few rows of each dataset
 After loading the datasets, we inspect the first few rows using the `.head()` method. This gives us a preliminary look at the structure of the data, including the column names, data types, and a few initial values.
 
-### Task 1.3: Obtain a Statistical Summary of the Data
-We use the `.describe()` method to generate a summary of the central tendency, dispersion, and shape of the dataset’s distribution. This includes metrics such as mean, median, standard deviation, minimum, maximum, and quartiles.
+```python
+print(house_prices.head())
+print(prices.head())
+print(salaries.head())
+print(sales.head())
+```
+#### house_prices
 
-### Task 1.4: Review the Data Types of Each Column
+| Region       | Period  | Total  |
+|--------------|---------|--------|
+| 01 Andalucía | 2023T4 | 5,3    |
+| 01 Andalucía | 2023T3 | 5,8    |
+| 01 Andalucía | 2023T2 | 4,5    |
+| 01 Andalucía | 2023T1 | 4,2    |
+| 01 Andalucía | 2022T4 | 6,5    |
+
+#### prices
+
+| Region       | Period  | Total  |
+|--------------|---------|--------|
+| 01 Andalucía | 2023M12 | 3,3    |
+| 01 Andalucía | 2023M11 | 3,5    |
+| 01 Andalucía | 2023M10 | 3,8    |
+| 01 Andalucía | 2023M09 | 3,8    |
+| 01 Andalucía | 2023M08 | 2,9    |
+
+#### salaries
+
+| Region       | Period  | Total     |
+|--------------|---------|-----------|
+| 01 Andalucía | 2023    | 2.100,74  |
+| 01 Andalucía | 2022    | 1.906,75  |
+| 01 Andalucía | 2021    | 1.864,47  |
+| 01 Andalucía | 2020    | 1.837,33  |
+| 01 Andalucía | 2019    | 1.773,03  |
+
+#### sales
+
+| Region       | Period  | Total   |
+|--------------|---------|---------|
+| 01 Andalucía | 2023M12 | 7.498   |
+| 01 Andalucía | 2023M11 | 9.939   |
+| 01 Andalucía | 2023M10 | 8.809   |
+| 01 Andalucía | 2023M09 | 8.263   |
+| 01 Andalucía | 2023M08 | 10.333  |
+
+The "Period" column in the datasets is recorded in different formats: quarterly (Q), monthly (M), and yearly.
+This needs to be standardized for consistent analysis.
+
+### Review the data types of each column
 Using the `.info()` method, we review the data types of each column to ensure they are appropriate for the analysis. This step helps in identifying any data type mismatches that may need correction, such as numerical values stored as strings or dates that are not in datetime format.
 
-## 2. Data Cleaning
+## 2. Data cleaning
 
-### Task 2.1: Identify and Handle Missing Values
-#### Task 2.1.1: Count Missing Values Per Column
-We begin by counting the number of missing values in each column. This helps in understanding the extent of missing data and determining the necessary steps to handle it.
+### Identify and handle missing values
 
-#### Task 2.1.2: Decide on a Strategy for Handling Missing Values
-Based on the extent and nature of the missing values, we decide on a strategy to handle them. This could involve removing rows or columns with excessive missing values, imputing missing values using statistical methods, or using domain-specific knowledge to fill in gaps.
+#### Count missing values per column
+We begin by counting the number of missing values in each column.
 
-### Task 2.2: Verify and Correct Inconsistencies in the Data
-We check for inconsistencies in the data, such as incorrect date formats, units of measurement, or out-of-range values. These inconsistencies are corrected to ensure data quality and reliability.
+```python
+print(house_prices.isnull().sum())
+print(prices.isnull().sum())
+print(salaries.isnull().sum())
+print(sales.isnull().sum())
+```
+#### house_prices (null values)
 
-### Task 2.3: Remove Duplicate Entries
-We identify and remove any duplicate rows in the datasets to prevent biased analysis results. Duplicate entries can arise from data collection or merging processes and need to be addressed.
+| Column  | Missing Values |
+|---------|----------------|
+| Region  | 0              |
+| Period  | 0              |
+| Total   | 0              |
+
+#### prices (null values)
+
+| Column  | Missing Values |
+|---------|----------------|
+| Region  | 0              |
+| Period  | 0              |
+| Total   | 0              |
+
+#### salaries (null values)
+
+| Column  | Missing Values |
+|---------|----------------|
+| Region  | 0              |
+| Period  | 0              |
+| Total   | 0              |
+
+#### sales (null values)
+
+| Column  | Missing Values |
+|---------|----------------|
+| Region  | 0              |
+| Period  | 0              |
+| Total   | 0              |
+
+There is no need for imputation or removal of rows/columns due to missing data. 
+
+### Identifying duplicates
+After checking the null values, we continue by identifying the duplicated values. 
+
+```python
+print(house_prices.duplicated().sum())
+print(prices.duplicated().sum())
+print(salaries.duplicated().sum())
+print(sales.duplicated().sum())
+```
+
+There aren't duplicates in any of the four datasets. 
+
+### Standardize the period column to yearly data
+The "Period" column dates are given in three different formats (quarter, month, and year). We will standardize this column to yearly data by calculating the mean of the quarterly and monthly data.
+
+
 
 
