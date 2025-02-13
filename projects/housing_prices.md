@@ -1,8 +1,8 @@
 # Exploratory data analysis (EDA)
 
-## Initial data exploration
+## 1. Initial data exploration
 
-### Load the datasets
+### 1.2 Load the datasets
 The first step involves loading the datasets into the analysis environment. This includes the following datasets:
 - House price index by region (2007-2023)
 - Consumer price index by region (2007-2023)
@@ -18,7 +18,7 @@ salaries = pd.read_csv('salaries_avg.csv', delimiter=';')
 sales = pd.read_csv('houses_sales.csv', delimiter=';')
 ```
 
-### Inspect the first few rows of each dataset
+### 1.3 Inspect the first few rows of each dataset
 After loading the datasets, we inspect the first few rows using the `.head()` method. This gives us a preliminary look at the structure of the data, including the column names, data types, and a few initial values.
 
 ```python
@@ -70,14 +70,11 @@ print(sales.head())
 The "Period" column in the datasets is recorded in different formats: quarterly (Q), monthly (M), and yearly.
 This needs to be standardized for consistent analysis.
 
-### Review the data types of each column
-Using the `.info()` method, we review the data types of each column to ensure they are appropriate for the analysis. This step helps in identifying any data type mismatches that may need correction, such as numerical values stored as strings or dates that are not in datetime format.
-
 ## 2. Data cleaning
 
-### Identify and handle missing values
+### 2.1 Identify and handle missing values
 
-#### Count missing values per column
+#### 2.1.1 Count missing values per column
 We begin by counting the number of missing values in each column.
 
 ```python
@@ -86,7 +83,7 @@ print(prices.isnull().sum())
 print(salaries.isnull().sum())
 print(sales.isnull().sum())
 ```
-#### house_prices (null values)
+##### house_prices (null values)
 
 | Column  | Missing Values |
 |---------|----------------|
@@ -94,7 +91,7 @@ print(sales.isnull().sum())
 | Period  | 0              |
 | Total   | 0              |
 
-#### prices (null values)
+##### prices (null values)
 
 | Column  | Missing Values |
 |---------|----------------|
@@ -102,7 +99,7 @@ print(sales.isnull().sum())
 | Period  | 0              |
 | Total   | 0              |
 
-#### salaries (null values)
+##### salaries (null values)
 
 | Column  | Missing Values |
 |---------|----------------|
@@ -110,7 +107,7 @@ print(sales.isnull().sum())
 | Period  | 0              |
 | Total   | 0              |
 
-#### sales (null values)
+##### sales (null values)
 
 | Column  | Missing Values |
 |---------|----------------|
@@ -120,7 +117,7 @@ print(sales.isnull().sum())
 
 There is no need for imputation or removal of rows/columns due to missing data. 
 
-### Identifying duplicates
+### 2.1.2 Identifying duplicates
 After checking the null values, we continue by identifying the duplicated values. 
 
 ```python
@@ -132,7 +129,7 @@ print(sales.duplicated().sum())
 
 There aren't duplicates in any of the four datasets. 
 
-### Standardize the period column to yearly data
+### 2.1.3 Standardize the period column to yearly data
 The "Period" column dates are given in three different formats (quarter, month, and year). We will standardize this column to yearly data by calculating the mean of the quarterly and monthly data.
 
 #### First, we change the 'Period' column for a 'year' column. 
@@ -192,7 +189,7 @@ house_prices_yearly = house_prices.groupby(['year', 'Region'])['Total'].mean().r
 house_prices_yearly = house_prices_yearly.round(2)
 ````
 
-#### 'house_prices' table
+##### 'house_prices' table
 
 ```python
 # Change the 'Total' column to float
@@ -206,7 +203,7 @@ house_prices_yearly = house_prices.groupby(['year', 'Region'])['Total'].mean().r
 house_prices_yearly = house_prices_yearly.round(2)
 ````
 
-#### 'prices' table
+##### 'prices' table
 
 ```python
 # Change the 'Total' column to float
@@ -220,7 +217,7 @@ prices_yearly = prices.groupby(['year', 'Region'])['Total'].mean().reset_index()
 prices_yearly.round(2)
 ```
 
-#### 'sales' table
+##### 'sales' table
 
 ```python
 # Change the 'Total' column to integer
