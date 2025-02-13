@@ -135,6 +135,46 @@ There aren't duplicates in any of the four datasets.
 ### Standardize the period column to yearly data
 The "Period" column dates are given in three different formats (quarter, month, and year). We will standardize this column to yearly data by calculating the mean of the quarterly and monthly data.
 
+#### First, we change the 'Period' column for a 'year' column. 
+
+```python
+# Extract the year from the 'Period' column and create a new 'year' column
+house_prices['year'] = house_prices['Period'].str[:4]
+
+# Drop the 'Period' column
+house_prices = house_prices.drop(columns=['Period'])
+
+# Display the updated DataFrame
+house_prices.head()
+```
+
+```python
+
+# Extract the year from the 'Period' column and create a new 'year' column
+prices['year'] = prices['Period'].str[:4]
+
+# Drop the 'Period' column
+prices = prices.drop(columns=['Period'])
+
+# Display the updated DataFrame
+prices.head()
+```
+
+```python
+
+# Extract the year from the 'Period' column and create a new 'year' column
+prices['year'] = prices['Period'].str[:4]
+
+# Drop the 'Period' column
+prices = prices.drop(columns=['Period'])
+
+# Display the updated DataFrame
+prices.head()
+```
+
+The 'salaries' Dataset already contains yearly data so we don't need to change it. 
+
+
 
 
 
