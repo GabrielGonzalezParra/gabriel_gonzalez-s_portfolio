@@ -174,6 +174,66 @@ prices.head()
 
 The 'salaries' Dataset already contains yearly data so we don't need to change it. 
 
+#### Then, we calculate the main of the quarterly and monthly data for the 'house_prices' and 'prices' tables and the summatory for the in order to switch the data type to yearly. 
+
+```python
+# Change the 'Total' column to float
+house_prices['Total']=house_prices['Total'].astype(str)
+house_prices['Total'] = house_prices['Total'].str.replace(',', '.').astype(float)
+```
+
+```python
+# Create a new DataFrame containing the yearly house prices index value
+house_prices_yearly = house_prices.groupby(['year', 'Region'])['Total'].mean().reset_index()
+```
+
+```python
+# Round the values to two decimal places
+house_prices_yearly = house_prices_yearly.round(2)
+````
+
+#### 'house_prices' table
+
+```python
+# Change the 'Total' column to float
+house_prices['Total']=house_prices['Total'].astype(str)
+house_prices['Total'] = house_prices['Total'].str.replace(',', '.').astype(float)
+
+# Create a new DataFrame containing the yearly house prices index value
+house_prices_yearly = house_prices.groupby(['year', 'Region'])['Total'].mean().reset_index()
+
+# Round the values to two decimal places
+house_prices_yearly = house_prices_yearly.round(2)
+````
+
+#### 'prices' table
+
+```python
+# Change the 'Total' column to float
+prices['Total'] = prices['Total'].astype(str)
+prices['Total'] = prices['Total'].str.replace(',', '.').astype(float)
+
+# Create a new DataFrame containing the yearly costumer prices index value
+prices_yearly = prices.groupby(['year', 'Region'])['Total'].mean().reset_index()
+
+# Round the values to two decimal places
+prices_yearly.round(2)
+```
+
+#### 'sales' table
+
+```python
+# Change the 'Total' column to integer
+sales['Total'] = sales['Total'].astype(int)
+
+# Create a new DataFrame containing the yearly number of houses sold
+sales_yearly = sales.groupby(['year', 'Region'])['Total'].sum().reset_index()
+```
+
+
+
+
+
 
 
 
