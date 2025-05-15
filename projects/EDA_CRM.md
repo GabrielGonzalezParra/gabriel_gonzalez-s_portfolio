@@ -114,6 +114,8 @@ On the other hand, outliers may be caused by extreme maximum values that are far
 
 Finally, looking at the quartiles, we find the Children variable relevant, as the majority of individuals have 1 child. In the Age variable, we also have a large portion of users between the ages of 46 and 64.
 
+---
+
 ```python
 
 # We generate statistics for a specific variable, the "Income" variable
@@ -142,6 +144,7 @@ The income range for the middle 50% is between Q1 and Q3, that is, between €35
 
 However, outliers can be observed, as although most incomes are clustered below €70,000, the maximum value of €666,666 is extremely high and represents a clear outlier, which likely affects both the mean and the standard deviation, increasing both values.
 
+---
 
 ```python
 
@@ -180,6 +183,9 @@ memory usage: 367.6 KB
 
 All variables are numeric, 20 of them contain integer values, except for the "Income" variable, which contains decimals. Additionally, only that variable has null values, specifically 24.
 
+The strategy we could follow to handle the missing values is to replace them with the median, as it is representative of typical behavior, simple, effective, and avoids bias due to missing data.
+
+---
 
 ```python
 
@@ -202,6 +208,8 @@ data.hist(figsize=(16, 20), bins=50, xlabelsize=8, ylabelsize=8);
 
 ![image](https://github.com/user-attachments/assets/e9cc2f5c-2d0d-446c-ab13-1b0d31ced2e2)
 
+---
+
 
 ```python
 
@@ -216,6 +224,8 @@ plt.hist(data['Age'], bins=25);
 
 The most common age is around 50 years old. The youngest individuals are around 18 years old, and the oldest are around 85. There are anomalous values, as there are individuals over 120 years old, which is impossible in reality and is likely an incorrect value.
 
+---
+
 ```python
 
 # We plot the histogram of the "MntWines" variable
@@ -229,6 +239,339 @@ plt.hist(data['MntWines'], bins=25);
 
 The histogram shows that the vast majority of users spend small amounts on wine, with the distribution of higher spending amounts gradually decreasing—that is, large amounts of wine purchases are less frequent in the overall distribution.
 
+---
+
+```python
+
+# We create the correlation matrix between the variables
+correlation_matrix = data.corr(method='pearson')
+
+# Create a heatmap using seaborn
+plt.figure(figsize=(15, 10))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+plt.title('Correlation Matrix (Values Above Threshold)')
+plt.show()
+
+```
+
+![image](https://github.com/user-attachments/assets/2d575ee3-b254-4404-b7c4-fcb54c37eea9)
 
 
+The correlation matrix shows the linear relationship between variables. The values range from -1 to 1. The closer a value is to 1, the stronger the positive linear relationship—meaning that if one variable increases, the other tends to increase as well. If the value is close to -1, the relationship is negative, meaning that when one variable increases, the other tends to decrease.
 
+There is a strong relationship between the variables MntWines and MntTotalSpent, which indicates that wine consumption has a significant influence on the increase in total spending.
+
+There is also a high correlation between NumStorePurchases and NumTotalPurchases, but this relationship is expected, as in-store purchases are part of the total purchases.
+
+We can also find a high correlation between MntMeatProducts and MntTotalSpent, which is a similar case to what happens with wine.
+
+On the other hand, there is no strong negative relationship between any of the variables. The most notable negative correlation is between Income and NumWebVisitsMonth, which suggests that the higher the annual income, the fewer monthly visits to the website.
+
+---
+
+```python
+
+# We visualize the outliers in each variable using a boxplot
+plt.figure(figsize=(15, 8))
+sns.boxplot(data=data)
+plt.xticks(rotation=45)  # Rotate x-axis labels for better visualization
+plt.title('Boxplot for Outlier Detection')
+plt.show()
+
+```
+
+![image](https://github.com/user-attachments/assets/e5fba62a-b719-4116-ba8f-e2c27d21a207)
+
+
+There are outliers in all variables except ID, Recency, NumStorePurchases, and NumTotalPurchases.
+
+
+```python
+# We generate statistics for the variables that contain outliers
+Outliers = ['Income', 'MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts',
+            'MntGoldProds', 'NumWebPurchases', 'NumCatalogPurchases', 'NumWebVisitsMonth', 'Complain',
+            'Education_Int', 'Marital_Status_Int', 'Children', 'MntTotalSpent', 'Age', 'Seniority']
+data[Outliers].describe()
+
+```
+
+| Statistic     | Income      | MntWines   | MntFruits | MntMeatProducts | MntFishProducts | MntSweetProducts | MntGoldProds | NumWebPurchases | NumCatalogPurchases | NumWebVisitsMonth | Complain | Education_Int | Marital_Status_Int | Children | MntTotalSpent | Age   | Seniority |
+|---------------|-------------|------------|-----------|------------------|------------------|-------------------|---------------|------------------|----------------------|--------------------|----------|----------------|---------------------|----------|----------------|--------|-----------|
+| **Count**     | 2216.000000 | 2240.000000 | 2240.000000 | 2240.000000       | 2240.000000       | 2240.000000        | 2240.000000    | 2240.000000       | 2240.000000           | 2240.000000         | 2240.000000 | 2240.000000    | 2240.000000         | 2240.000000 | 2240.000000     | 2240.000000 | 2240.000000 |
+| **Mean**      | 52247.251354 | 303.935714 | 26.302232  | 166.950000        | 37.525446         | 27.062946          | 44.021875     | 4.084821          | 2.662054              | 5.316518            | 0.009375 | 2.460268       | 1.480357            | 0.950446 | 605.798214     | 54.194196 | 1.971875   |
+| **Std**       | 25173.076661 | 336.597393 | 39.773434  | 225.715373        | 54.628979         | 41.280498          | 52.167439     | 2.778714          | 2.923101              | 2.426645            | 0.096391 | 1.004337       | 1.047154            | 0.751803 | 602.249288     | 11.984069 | 0.684554   |
+| **Min**       | 1730.000000  | 0.000000   | 0.000000   | 0.000000          | 0.000000          | 0.000000           | 0.000000      | 0.000000          | 0.000000              | 0.000000            | 0.000000 | 0.000000       | 0.000000            | 0.000000 | 5.000000       | 27.000000 | 1.000000   |
+| **25%**       | 35303.000000 | 23.750000  | 1.000000   | 16.000000         | 3.000000          | 1.000000           | 9.000000      | 2.000000          | 0.000000              | 3.000000            | 0.000000 | 2.000000       | 1.000000            | 0.000000 | 68.750000      | 46.000000 | 2.000000   |
+| **50%**       | 51381.500000 | 173.500000 | 8.000000   | 67.000000         | 12.000000         | 8.000000           | 24.000000     | 4.000000          | 2.000000              | 6.000000            | 0.000000 | 2.000000       | 2.000000            | 1.000000 | 396.000000     | 53.000000 | 2.000000   |
+| **75%**       | 68522.000000 | 504.250000 | 33.000000  | 232.000000        | 50.000000         | 33.000000          | 56.000000     | 6.000000          | 4.000000              | 7.000000            | 0.000000 | 3.000000       | 2.000000            | 1.000000 | 1045.500000    | 64.000000 | 2.000000   |
+| **Max**       | 666666.000000| 1493.000000| 199.000000 | 1725.000000       | 259.000000        | 263.000000         | 362.000000    | 27.000000         | 28.000000             | 20.000000           | 1.000000 | 4.000000       | 4.000000            | 3.000000 | 2525.000000    | 130.000000| 3.000000   |
+
+
+The impact of outliers can include, first of all, the distortion of descriptive statistics, as the mean is affected by these values, and although the median and quartiles are more robust, they are also influenced. This also affects the interpretation of graphs and histograms, making them harder to interpret and less visually clear. Finally, the presence of outliers can also affect statistical models, skewing certain coefficients.
+
+---
+
+Once we have examined how the data is distributed, identified any missing or anomalous values, and carried out the necessary cleaning and transformations, we will conduct a more in-depth analysis of the variables we believe provide relevant insights into our customers’ behavior and characteristics. This information may include: spending based on age, the preferred sales channel used, or the education level of those who purchase a specific type of product.
+
+
+```python
+
+# We analyze the education level of the customers. To do this, we visualize it with a pie chart.
+counts = data['Education_Int'].value_counts()
+
+# We add the legend
+labels = ['Grado', 'PhD', 'Master', 'Secundaria', 'Basica']
+plt.pie(counts, labels=labels, autopct='%1.1f%%')
+
+# Add the title
+plt.title('Distribucion educativa de nuestros clientes')
+
+# Draw the chart
+plt.show()
+
+![image](https://github.com/user-attachments/assets/6f23f362-e2ea-450f-ac2a-76ab293ade93)
+
+```pyton
+
+# We analyze the marital status of the customers. To do this, we visualize it with a pie chart
+counts = data['Marital_Status_Int'].value_counts()
+
+# Add the legend
+labels = ['Soltero', 'Pareja de hecho', 'Casado', 'Divorciado', 'Viudo']
+plt.pie(counts, labels=labels, autopct='%1.1f%%')
+# Add the title
+plt.title('Estado civil')
+# Plot the chart
+plt.show()
+
+```
+![image](https://github.com/user-attachments/assets/15f5ccc4-064b-420e-9f00-ca667159c65c)
+
+```python
+
+#Analizamos la relación entre el estado civil del cliente y el gasto y lo representamos gráficamente.
+To_Plot = [ "Marital_Status_Int", "MntTotalSpent"]
+print("Relación entre las variables seleccionadas")
+plt.figure()
+# Crear un pairplot con las combinaciones de las variables seleccionadas
+sns.pairplot(data[To_Plot])
+# Mostrar el pairplot
+plt.show()
+
+```
+
+``` python
+
+# We analyze the relationship between the number of children and total spending. We visualize it with a boxplot
+
+# We set the figure size
+plt.figure(figsize = (10, 6))
+
+# We create the violin plot
+sns.violinplot(x = 'Children', y = 'MntTotalSpent', data = data, palette = 'cool')
+
+# We define the title of the figure and each axis
+plt.title('Distribucion del gasto en función del número de hijos en la familia')
+plt.xlabel('Nº Hijos')
+plt.ylabel('Gasto Total')
+
+plt.show()
+
+```
+
+![image](https://github.com/user-attachments/assets/01251823-5fe4-42d8-9655-504938dd6218)
+
+
+```python
+
+# We analyze the relationship between household income (Income) and spending (MntTotalSpent). We visualize it with a scatter plot
+
+# Set the figure size
+plt.figure(figsize = (10, 6))
+
+# Create the scatter plot
+plt.scatter(data['Income'], data['MntTotalSpent'], color = 'blue', alpha = 0.1)
+
+# Set the axis labels
+plt.xlabel('Income')
+plt.ylabel('MntTotalSpent')
+
+# Set the chart title
+plt.title('Income vs MntTotalSpent')
+plt.show()
+
+```
+
+![image](https://github.com/user-attachments/assets/b89322ad-6fe0-4153-abbc-9b8447745092)
+
+
+```python
+
+# We analyze the relationship between the client's education level and total spending
+sns.barplot(x = data['Education_Int'],y = data['MntTotalSpent']);
+plt.title('Gasto total en función del nivel educativo del cliente');
+
+```
+
+![image](https://github.com/user-attachments/assets/4e542e20-a707-4e72-a88a-ad8b2bc8d659)
+
+```python
+# We analyze the relationship between spending and customer complaints.
+sns.barplot(x = data['Complain'],y = data['MntTotalSpent'].mean());
+plt.title('Gasto medio en función de si el cliente ha presentado o no reclamaciones');
+
+```
+
+![image](https://github.com/user-attachments/assets/bd6414f8-21c4-4da9-9ae6-61f7b77a9184)
+
+```python
+
+# We analyze sales by channel. We visualize it with a bar chart
+suma_columna1 = data['NumWebPurchases'].sum()
+suma_columna2 = data['NumCatalogPurchases'].sum()
+suma_columna3 = data['NumStorePurchases'].sum()
+
+# Create a DataFrame with the sums of each column
+df_suma = pd.DataFrame({'Columna': ['NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases'],
+                        'Suma': [suma_columna1, suma_columna2, suma_columna3]})
+
+# Create the bar chart for the sum of each column
+plt.figure(figsize=(10, 6))
+df_suma.plot(x='Columna', y='Suma', kind='bar', color='skyblue')
+plt.xlabel('Canal')
+plt.ylabel('Nº de Ventas')
+plt.title('Nº de Ventas totales en cada canal')
+plt.show()
+
+```
+
+Total Spending Based on the Customer's Education Level
+Customers with higher education levels tend to spend more. It can be seen that education categories 2, 3, and 4 have significantly higher spending compared to customers with a lower education level (level 0). This could suggest that customers with higher education levels have greater purchasing power or are more likely to make larger purchases.
+
+Total Number of Sales by Channel
+This shows the total number of sales across three different channels: web, catalog, and physical store. It is observed that in-store purchases (NumStorePurchases) exceed both online purchases (NumWebPurchases) and catalog purchases (NumCatalogPurchases). This indicates a clear customer preference for shopping in person.
+
+Total Spending Based on Number of Children
+Customers without children (0) show significantly higher spending compared to those with 1, 2, or 3 children. As the number of children increases, both the average spending and the variability in spending decrease notably.
+
+This could be due to higher disposable income in households without dependents, or due to different consumption preferences, prioritizing essential goods and purchasing a higher quantity of fewer items rather than diversifying their shopping basket.
+
+Spending by Product Type
+Based on the total sales of each product, wine and meat stand out as the top products, with wine being the clear favorite. This might indicate that wine consumers also tend to be meat consumers.
+
+```python
+
+# Analysis of the relationship between Recency and Marital Status.
+
+marital_status_labels = {
+    0: 'Single',
+    1: 'Married',
+    2: 'Widow',
+    3: 'Divorced',
+    4: 'Together'
+}
+data['Marital_Status_Label'] = data['Marital_Status_Int'].map(marital_status_labels)
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='Marital_Status_Label', y='Recency', data=data)
+plt.title('Recency vs. Marital Status')
+plt.xlabel('Marital Status')
+plt.ylabel('Recency')
+plt.show()
+
+#Chart
+
+plt.figure(figsize=(10,6))
+sns.violinplot(x='Marital_Status_Label', y='Recency', data=data)
+plt.title('Recency vs. Marital Status (Violin Plot)')
+plt.xlabel('Marital Status')
+plt.ylabel('Recency')
+plt.show()
+print(data.groupby('Marital_Status_Label')['Recency'].describe())
+
+```
+![image](https://github.com/user-attachments/assets/9a17daf2-a8df-4589-bcd8-3b80dfed7c99)
+![image](https://github.com/user-attachments/assets/fa88e572-65cd-463d-908e-a4ab48483bde)
+
+```
+                      count       mean        std  min    25%   50%    75%  \
+Marital_Status_Label                                                         
+Divorced              232.0  49.487069  28.728612  0.0  25.75  51.0  75.25   
+Married               580.0  50.106897  28.546099  0.0  26.00  51.0  75.00   
+Single                485.0  49.195876  28.697712  0.0  25.00  50.0  74.00   
+Together               77.0  49.142857  28.771657  0.0  28.00  48.0  75.00   
+Widow                 866.0  48.288684  29.503519  0.0  23.00  48.0  73.00   
+
+                       max  
+Marital_Status_Label        
+Divorced              99.0  
+Married               99.0  
+Single                99.0  
+Together              99.0  
+Widow                 99.0
+
+```
+
+```python
+
+# Analysis of the relation between Marital Status and Seniority
+
+marital_status_labels = {
+    0: 'Single',
+    1: 'Married',
+    2: 'Widow',
+    3: 'Divorced',
+    4: 'Together'
+}
+data['Marital_Status_Label'] = data['Marital_Status_Int'].map(marital_status_labels)
+
+# Chart
+plt.figure(figsize=(10, 6))
+sns.boxplot(data=data, x='Marital_Status_Label', y='Seniority')
+plt.title('Relación entre Seniority y Estado Civil')
+plt.xlabel('Estado Civil')
+plt.ylabel('Antigüedad del Cliente (Seniority)')
+plt.tight_layout()
+plt.show()
+
+```
+
+![image](https://github.com/user-attachments/assets/26eadf35-a5fe-485b-be43-c874d2960a18)
+
+
+``` python
+
+# Analysis of the relation between the frequency and the number of monthly visits
+
+plt.figure(figsize=(8, 5))
+sns.histplot(data['NumWebVisitsMonth'], bins=10, kde=True)
+plt.title('Frecuencia de Visitas Web Mensuales')
+plt.xlabel('Número de Visitas Web por Mes')
+plt.ylabel('Frecuencia')
+plt.tight_layout()
+plt.show()
+
+```
+
+![image](https://github.com/user-attachments/assets/d4d34a37-cb7e-4e49-bc9f-0616a1c0c025)
+
+
+**1. Customer Typology**
+Most of our customers are between 36 and 65 years old, not married or without a registered partner (combining widowed, single, and divorced into one category), have at least one child, and possess a high level of education.
+
+**2. Customer Behavior**
+Wine and meat are the star products, with wine being by far the clear favorite. Most customers prefer to shop in physical stores or spend more there, making it the predominant channel. On the other hand, we have found that most customers visit the website between 4 and 8 times per month. Finally, we have observed that customers with a partner but not married have the highest customer seniority.
+
+**Conclusions**
+
+We observe that a higher level of education correlates positively with higher spending.
+
+Although customers without children tend to spend more on average, the median expenditure is higher among families with children, making this segment particularly worth considering.
+
+Income is not a determining factor for spending levels, as the data shows that higher income does not imply higher expenditure.
+
+Customers spend significantly more in physical stores compared to online.
+
+The seniority variable suggests that most customers have been acquired recently or do not have a long-standing relationship with the brand. The most loyal customers are those in a registered partnership, followed by married customers. This is confirmed by our analysis of marital status and the recency variable, as they exhibit the lowest recency values.
+
+Customers who have submitted complaints tend to have lower incomes.
